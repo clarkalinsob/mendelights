@@ -1,27 +1,25 @@
 const express = require('express');
-const { ApolloServer, gql } = require('apollo-server-express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const { ApolloServer } = require('apollo-server-express');
 
-const typeDefs = gql`
-    type Query {
-        hello: String
-        hi: String
-    }
-`;
+const { MONGODB } = require('./config');
+const typeDefs = require('./graphql/typeDefs');
+const resolvers = require('./graphql/resolvers');
 
-const resolvers = {
-    Query: {
-        hello: () => 'Hello Wodddrld!',
-        hi: () => 'Hi'
-    }
-};
-const server = new ApolloServer({ typeDefs, resolvers });
-
+const server = new ApolloServer({ typeDefs, resolvers, context: ({ req }) => ({ req }) });
 const app = express();
+
 server.applyMiddleware({ app });
 
+app.use(cors());
+
 app.get('/', (req, res) => {
-    res.send('Sample docker');
+  res.send('Sample docker');
 });
 
-const port = 80;
-app.listen(port, () => console.log(`Server started on PORT ${port}`));
+const port = 4000;
+mongoose.connect(MONGODB, { useNewUrlParser: true }).then(() => {
+  console.log('MongoDB Connected');
+  app.listen({ port }, () => console.log(`Server running on PORT ${port}`));
+});
