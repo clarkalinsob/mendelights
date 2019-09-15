@@ -2,7 +2,7 @@ const { model, Schema } = require('mongoose');
 
 const deliveryDateSchema = new Schema({
   date: Date,
-  orderIds: [
+  orders: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Order'

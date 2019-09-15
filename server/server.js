@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const { ApolloServer } = require('apollo-server-express');
 
-const { MONGODB } = require('./config');
+const { MONGODB_LOCAL } = require('./config');
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
 
@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 const port = 4000;
-mongoose.connect(MONGODB, { useNewUrlParser: true }).then(() => {
+mongoose.connect(MONGODB_LOCAL, { useNewUrlParser: true }).then(() => {
   console.log('MongoDB Connected');
   app.listen({ port }, () => console.log(`Server running on PORT ${port}`));
 });

@@ -52,7 +52,7 @@ module.exports = {
         name,
         email,
         password,
-        role: 'Admin'
+        role: 'Customer'
       });
 
       const res = await newUser.save();

@@ -96,6 +96,8 @@ module.exports = gql`
 
     # food mutations
     createFood(name: String!, price: String!): Food!
+    editFood(foodId: ID!, name: String!, price: String!): Food!
+    deleteFood(name: String!): String!
 
     # order mutations
     createOrder(orderInput: OrderInput): Order!
@@ -104,5 +106,7 @@ module.exports = gql`
 
     # deliveryDate mutations
     createDeliveryDate(deliveryDateInput: DeliveryDateInput): DeliveryDate!
+    editDeliveryDate(deliveryDateId: ID!, date: String!): DeliveryDate!
+    deleteDeliveryDate(deliveryId: ID!): String!
   }
 `;
