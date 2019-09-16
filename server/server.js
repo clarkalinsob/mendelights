@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
   res.send('Sample docker');
 });
 
-const port = 4000;
+const port = 8000;
 mongoose.connect(MONGODB_LOCAL, { useNewUrlParser: true }).then(() => {
   console.log('MongoDB Connected');
   app.listen({ port }, () => console.log(`Server running on PORT ${port}`));

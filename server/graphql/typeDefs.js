@@ -101,6 +101,7 @@ module.exports = gql`
 
     # order mutations
     createOrder(orderInput: OrderInput): Order!
+    deleteOrder(orderId: ID!): String!
     updateOrderStatus(orderId: ID!, status: String!): Order!
     togglePaymentStatus(orderId: ID!): Order!
 

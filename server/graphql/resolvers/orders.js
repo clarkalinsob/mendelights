@@ -61,6 +61,24 @@ module.exports = {
       return order;
     },
 
+    deleteOrder: async (_, { orderId }, context) => {
+      const { role } = checkAuth(context);
+
+      if (role !== 'Admin') throw new AuthenticationError('Action not allowed');
+
+      try {
+        const order = await Order.findById(orderId);
+
+        if (!order) throw new Error('Order not found');
+
+        await order.delete();
+
+        return 'Order has successfully deleted';
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+
     updateOrderStatus: async (_, { orderId, status }, context) => {
       const { role } = checkAuth(context);
 
