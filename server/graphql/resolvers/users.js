@@ -66,6 +66,8 @@ module.exports = {
     },
 
     signinUser: async (_, { email, password }) => {
+      console.log(email);
+      console.log(password);
       const { errors, valid } = validateSigninInput(email, password);
 
       if (!valid) {

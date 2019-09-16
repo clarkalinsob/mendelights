@@ -1,11 +1,19 @@
 version: '3'
 services:
-  app:
-    container_name: mendelights
+  # client:
+  # container_name: mendelights-server
+  # restart: always
+  # build: ./server
+  # volumes:
+  #   - ./server:/home/src/app/client
+  # ports:
+  #   - 3000:3000
+  server:
+    container_name: mendelights-server
     restart: always
     build: ./server
     volumes:
-      - ./server:/usr/src/app
+      - ./server:/home/src/app/server
     ports:
       - 4000:4000
   # website:

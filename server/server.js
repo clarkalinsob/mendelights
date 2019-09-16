@@ -1,25 +1,38 @@
-const express = require('express');
+const { ApolloServer } = require('apollo-server');
+// const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
-const { ApolloServer } = require('apollo-server-express');
+// const cors = require('cors');
+// const { ApolloServer } = require('apollo-server-express');
 
 const { MONGODB_LOCAL } = require('./config');
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
 
-const server = new ApolloServer({ typeDefs, resolvers, context: ({ req }) => ({ req }) });
-const app = express();
-
-server.applyMiddleware({ app });
-
-app.use(cors());
-
-app.get('/', (req, res) => {
-  res.send('Sample docker');
+const server = new ApolloServer({
+  cors: { origin: '*', credentials: true },
+  typeDefs,
+  resolvers,
+  context: ({ req }) => ({ req }),
+  introspection: true,
+  playground: true
 });
 
-const port = 8000;
-mongoose.connect(MONGODB_LOCAL, { useNewUrlParser: true }).then(() => {
-  console.log('MongoDB Connected');
-  app.listen({ port }, () => console.log(`Server running on PORT ${port}`));
-});
+// const app = express();
+
+// server.applyMiddleware({ app });
+
+// app.use(cors());
+
+// app.get('/', (req, res) => {
+//   res.send('Sample docker');
+// });
+
+const port = 5001;
+
+mongoose
+  .connect(MONGODB_LOCAL, { useNewUrlParser: true })
+  .then(() => {
+    console.log('MongoDB Connected');
+    return server.listen({ port });
+  })
+  .then(res => console.log(`Server running at ${res.url}`));
