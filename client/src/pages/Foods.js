@@ -2,13 +2,45 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import ResponsiveDrawer from '../components/ResponsiveDrawer';
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+
+import FoodCard from '../components/FoodCard';
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary
+  }
+}));
 
 function Foods() {
   const { loading, data, error } = useQuery(FETCH_FOODS);
-  console.log(data);
 
-  return <h1>Food Page</h1>;
+  const classes = useStyles();
+  return (
+    <>
+      {/* <h1>Food Page</h1> */}
+      {loading ? (
+        <h1>loading ... </h1>
+      ) : (
+        <div className={classes.root}>
+          <Grid container spacing={5}>
+            {data.getFoods.map(food => (
+              <Grid key={food.id} item xs={12} sm={12}>
+                <FoodCard food={food} />
+              </Grid>
+            ))}
+          </Grid>
+        </div>
+      )}
+    </>
+  );
 }
 
 const FETCH_FOODS = gql`
@@ -16,6 +48,7 @@ const FETCH_FOODS = gql`
     getFoods {
       id
       name
+      price
     }
   }
 `;
