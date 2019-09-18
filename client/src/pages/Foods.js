@@ -3,10 +3,10 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
 import FoodCard from '../components/FoodCard';
+import NewFood from '../components/NewFood';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,6 +30,7 @@ function Foods() {
         <h1>loading ... </h1>
       ) : (
         <div className={classes.root}>
+          <NewFood />
           <Grid container spacing={5}>
             {data.getFoods.map(food => (
               <Grid key={food.id} item xs={12} sm={12}>

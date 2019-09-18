@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -14,6 +14,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import DashboardIcon from '@material-ui/icons/Dashboard';
@@ -33,7 +37,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex'
   },
-
   drawer: {
     [theme.breakpoints.up('sm')]: {
       width: drawerWidth,
@@ -67,11 +70,13 @@ String.prototype.capitalize = function() {
 };
 
 function ResponsiveDrawer(props) {
-  const { user } = useContext(AuthContext);
+  const { user, signout } = useContext(AuthContext);
   const { container } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
 
   const path = window.location.pathname.split('/');
   const currentPath = path[1];
@@ -84,6 +89,19 @@ function ResponsiveDrawer(props) {
 
   function handleSelectedNav(text) {
     if (text === navTitle.toLowerCase()) return true;
+  }
+
+  function handleMenu(event) {
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleClose() {
+    setAnchorEl(null);
+  }
+
+  function handleSignout() {
+    setAnchorEl(null);
+    signout();
   }
 
   const mainContent = (
@@ -159,6 +177,38 @@ function ResponsiveDrawer(props) {
     </div>
   );
 
+  const profileMenu = (
+    <div style={{ marginLeft: 'auto' }}>
+      <IconButton
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        onClick={handleMenu}
+        color="inherit"
+      >
+        <AccountCircle />
+      </IconButton>
+      <Menu
+        id="menu-appbar"
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleSignout}>Logout</MenuItem>
+      </Menu>
+    </div>
+  );
+
   return (
     <>
       {user && user.role === 'Admin' && (
@@ -178,6 +228,7 @@ function ResponsiveDrawer(props) {
               <Typography variant="h5" noWrap>
                 {navTitle}
               </Typography>
+              {profileMenu}
             </Toolbar>
           </AppBar>
           <nav className={classes.drawer} aria-label="mailbox folders">

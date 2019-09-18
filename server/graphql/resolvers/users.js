@@ -66,8 +66,6 @@ module.exports = {
     },
 
     signinUser: async (_, { email, password }) => {
-      console.log(email);
-      console.log(password);
       const { errors, valid } = validateSigninInput(email, password);
 
       if (!valid) {
@@ -84,8 +82,9 @@ module.exports = {
       const match = await bcrypt.compare(password, user.password);
 
       if (!match) {
-        errors.general = 'Wrong password';
-        throw new UserInputError('Wrong password', { errors });
+        throw new UserInputError('Wrong password', {
+          errors: { password: 'Wrong password' }
+        });
       }
 
       const token = generateToken(user);

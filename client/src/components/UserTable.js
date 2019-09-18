@@ -58,10 +58,6 @@ export default function UserTable() {
       rows.push(createData(user.name, user.email, user.role));
     });
   }
-  // const rows = [
-  //   createData('Clark Alinsob', 'clarkalinsob101@gmail.com', 'Admin'),
-  //   createData('Nykel Wong', 'nykelw@gmail.com', 'Customer')
-  // ];
 
   return (
     <Paper className={classes.root}>
@@ -83,7 +79,7 @@ export default function UserTable() {
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.email}>
                   {columns.map(column => {
                     const value = row[column.id];
                     return (

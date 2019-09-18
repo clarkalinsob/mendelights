@@ -6,15 +6,14 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { useForm } from '../util/hooks';
 import { AuthContext } from '../context/auth';
@@ -77,12 +76,10 @@ const SignIn = props => {
       }
     ) {
       context.signin(userData);
-
       if (userData.role === 'Admin') props.history.push('/dashboard');
       else props.history.push('/orders');
     },
     onError(err) {
-      //   console.log(err);
       setErrors(err.graphQLErrors[0].extensions.exception.errors);
     }
   });
@@ -105,6 +102,7 @@ const SignIn = props => {
             </Typography>
             <form className={classes.form} noValidate onSubmit={onSubmit}>
               <TextField
+                error={errors.email ? true : false}
                 variant="outlined"
                 margin="normal"
                 required
@@ -118,6 +116,7 @@ const SignIn = props => {
                 onChange={onChange}
               />
               <TextField
+                error={errors.password ? true : false}
                 variant="outlined"
                 margin="normal"
                 required
@@ -139,6 +138,16 @@ const SignIn = props => {
               >
                 Sign In
               </Button>
+              {Object.keys(errors).length > 0 && (
+                <div>
+                  {Object.values(errors).map(value => (
+                    <Typography variant="body2" color="error" paragraph key={value}>
+                      *{value}
+                    </Typography>
+                  ))}
+                </div>
+              )}
+
               <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2">

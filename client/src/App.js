@@ -14,10 +14,11 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <ResponsiveDrawer />
+        <ResponsiveDrawer signinRedirect="dashboard" />
 
         {/* Unauthenticated Route */}
         <Route exact path="/" component={Home} />
+        <AuthRoute exact path="/signin" component={SignIn} />
 
         {/* ClientProtectedRoute */}
         <ClientProtectedRoute exact path="/orderHistory" component={Orders} />
@@ -28,7 +29,6 @@ const App = () => {
         <AdminProtectedRoute exact path="/users" component={Dashboard} />
 
         {/* AuthRoute */}
-        <AuthRoute exact path="/signin" component={SignIn} />
       </Router>
     </AuthProvider>
   );
