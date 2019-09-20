@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 import Avatar from '@material-ui/core/Avatar';

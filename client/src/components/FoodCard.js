@@ -1,13 +1,15 @@
 import React from 'react';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Button from '@material-ui/core/Button';
-import DeleteIcon from '@material-ui/icons/Delete';
+
 import EditIcon from '@material-ui/icons/Edit';
-import { fontWeight } from '@material-ui/system';
+
+import DeleteButton from './DeleteButton';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,9 +45,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function FoodCard(props) {
+const FoodCard = props => {
   const classes = useStyles();
-
   const { food } = props;
 
   return (
@@ -76,10 +77,7 @@ export default function FoodCard(props) {
                   {/* This Button uses a Font Icon, see the installation instructions in the docs. */}
                   <EditIcon className={classes.rightIcon}>send</EditIcon>
                 </Button>
-                <Button variant="contained" color="secondary" className={classes.button}>
-                  Delete
-                  <DeleteIcon className={classes.rightIcon} />
-                </Button>
+                <DeleteButton food={food} />
                 {/* <Typography variant="body2" style={{ cursor: 'pointer' }}>
                   Remove
                 </Typography> */}
@@ -93,4 +91,6 @@ export default function FoodCard(props) {
       </Paper>
     </div>
   );
-}
+};
+
+export default FoodCard;

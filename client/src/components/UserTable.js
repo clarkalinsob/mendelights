@@ -35,12 +35,12 @@ const useStyles = makeStyles({
   }
 });
 
-export default function UserTable() {
+const UserTable = () => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const { loading, data, error } = useQuery(FETCH_USERS);
+  const { loading, data } = useQuery(GET_USERS);
 
   function handleChangePage(event, newPage) {
     setPage(newPage);
@@ -111,9 +111,9 @@ export default function UserTable() {
       />
     </Paper>
   );
-}
+};
 
-const FETCH_USERS = gql`
+const GET_USERS = gql`
   query getUsers {
     getUsers {
       id
@@ -123,3 +123,5 @@ const FETCH_USERS = gql`
     }
   }
 `;
+
+export default UserTable;

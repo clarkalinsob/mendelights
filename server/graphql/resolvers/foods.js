@@ -7,7 +7,7 @@ module.exports = {
   Query: {
     getFoods: async () => {
       try {
-        const foods = await Food.find();
+        const foods = await Food.find().sort({ createdAt: -1 });
 
         return foods;
       } catch (error) {

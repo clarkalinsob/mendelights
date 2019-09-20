@@ -102,6 +102,7 @@ function ResponsiveDrawer(props) {
   function handleSignout() {
     setAnchorEl(null);
     signout();
+    window.location.href = '/signin';
   }
 
   const mainContent = (
