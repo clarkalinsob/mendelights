@@ -12,6 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 
 import AddIcon from '@material-ui/icons/Add'
+import EditIcon from '@material-ui/icons/Edit'
 
 const useStyles = makeStyles(theme => ({
   rightIcon: {
@@ -21,42 +22,56 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     width: 200
+  },
+  editButton: {
+    margin: theme.spacing(1)
   }
 }))
 
-const NewFood = () => {
+const FoodDialog = props => {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
+  const [foodId, setFoodId] = useState('')
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
+  const mutation = props.action === 'edit' ? EDIT_FOOD : CREATE_FOOD
 
-  const handleNameChange = ({ target: { value } }) => {
-    setName(value)
-  }
-
-  const handlePriceChange = ({ target: { value } }) => {
-    setPrice(value)
-  }
-
-  const [createFood, { error }] = useMutation(CREATE_FOOD, {
+  const [createFood, { error }] = useMutation(mutation, {
     variables: {
       name,
-      price
+      price,
+      foodId
     },
     update(proxy, result) {
-      const data = proxy.readQuery({
-        query: GET_FOODS
-      })
+      if (props.action === 'add') {
+        const data = proxy.readQuery({
+          query: GET_FOODS
+        })
 
-      data.getFoods = [result.data.createFood, ...data.getFoods]
-      proxy.writeQuery({ query: GET_FOODS, data })
+        data.getFoods = [result.data.createFood, ...data.getFoods]
+        proxy.writeQuery({ query: GET_FOODS, data })
+      }
+
       setName('')
       setPrice('')
       handleClose()
     }
   })
 
+  function handleNameChange({ target: { value } }) {
+    setName(value)
+  }
+
+  function handlePriceChange({ target: { value } }) {
+    setPrice(value)
+  }
+
   function handleClickOpen() {
+    if (props.food && props.action === 'edit') {
+      setFoodId(props.food.id)
+      setName(props.food.name)
+      setPrice(props.food.price)
+    }
     setOpen(true)
   }
 
@@ -64,14 +79,32 @@ const NewFood = () => {
     setOpen(false)
   }
 
+  console.log('error:::', error)
+
   return (
-    <div style={{ float: 'right', marginBottom: 10 }}>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        Add New
-        <AddIcon className={classes.rightIcon} />
+    <div style={props.action === 'edit' ? { float: 'left' } : { float: 'right' }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleClickOpen}
+        className={props.action === 'edit' ? classes.editButton : ''}
+      >
+        {props.action === 'edit' ? (
+          <>
+            Edit
+            <EditIcon className={classes.rightIcon} />
+          </>
+        ) : (
+          <>
+            Add New
+            <AddIcon className={classes.rightIcon} />
+          </>
+        )}
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Add New Food</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          {props.action === 'edit' ? 'Edit Food' : 'Add New Food'}
+        </DialogTitle>
         <DialogContent>
           <TextField
             className={classes.textField}
@@ -81,6 +114,8 @@ const NewFood = () => {
             label="Name"
             fullWidth
             onChange={handleNameChange}
+            defaultValue={name}
+            // defaultValue={props.action === 'edit' ? props.food.name : ''}
           />
           <TextField
             className={classes.textField}
@@ -90,6 +125,8 @@ const NewFood = () => {
             label="Price"
             fullWidth
             onChange={handlePriceChange}
+            defaultValue={price}
+            // defaultValue={props.action === 'edit' ? props.food.price : ''}
           />
         </DialogContent>
         <DialogActions>
@@ -125,6 +162,16 @@ const CREATE_FOOD = gql`
   }
 `
 
+const EDIT_FOOD = gql`
+  mutation editFood($foodId: ID!, $name: String!, $price: String!) {
+    editFood(foodId: $foodId, name: $name, price: $price) {
+      id
+      name
+      price
+    }
+  }
+`
+
 const GET_FOODS = gql`
   {
     getFoods {
@@ -135,4 +182,4 @@ const GET_FOODS = gql`
   }
 `
 
-export default NewFood
+export default FoodDialog

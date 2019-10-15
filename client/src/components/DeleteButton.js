@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import React, { useState } from 'react'
+import { useMutation } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
 
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { makeStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -18,12 +18,12 @@ const useStyles = makeStyles(theme => ({
   rightIcon: {
     marginLeft: theme.spacing(1)
   }
-}));
+}))
 
 const DeleteButton = props => {
-  const classes = useStyles();
-  const { food } = props;
-  const [open, setOpen] = useState(false);
+  const classes = useStyles()
+  const { food } = props
+  const [open, setOpen] = useState(false)
 
   const [deleteFood] = useMutation(DELETE_FOOD, {
     variables: {
@@ -32,19 +32,19 @@ const DeleteButton = props => {
     update(proxy) {
       const data = proxy.readQuery({
         query: GET_FOODS
-      });
-      data.getFoods = data.getFoods.filter(f => f.name !== food.name);
-      proxy.writeQuery({ query: GET_FOODS, data });
-      handleClose();
+      })
+      data.getFoods = data.getFoods.filter(f => f.name !== food.name)
+      proxy.writeQuery({ query: GET_FOODS, data })
+      handleClose()
     }
-  });
+  })
 
   function handleOpen() {
-    setOpen(true);
+    setOpen(true)
   }
 
   function handleClose() {
-    setOpen(false);
+    setOpen(false)
   }
 
   return (
@@ -55,7 +55,7 @@ const DeleteButton = props => {
       </Button>
       <Dialog
         open={open}
-        onClose={open}
+        onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -75,14 +75,14 @@ const DeleteButton = props => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
 const DELETE_FOOD = gql`
   mutation deleteFood($name: String!) {
     deleteFood(name: $name)
   }
-`;
+`
 
 const GET_FOODS = gql`
   {
@@ -92,6 +92,6 @@ const GET_FOODS = gql`
       price
     }
   }
-`;
+`
 
-export default DeleteButton;
+export default DeleteButton

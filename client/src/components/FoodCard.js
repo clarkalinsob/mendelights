@@ -1,15 +1,16 @@
-import React from 'react';
+import React from 'react'
 
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles'
+import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
+import ButtonBase from '@material-ui/core/ButtonBase'
+import Button from '@material-ui/core/Button'
 
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@material-ui/icons/Edit'
 
-import DeleteButton from './DeleteButton';
+import FoodDialog from './FoodDialog'
+import DeleteButton from './DeleteButton'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,11 +44,10 @@ const useStyles = makeStyles(theme => ({
   iconSmall: {
     fontSize: 20
   }
-}));
+}))
 
 const FoodCard = props => {
-  const classes = useStyles();
-  const { food } = props;
+  const classes = useStyles()
 
   return (
     <div className={classes.root}>
@@ -62,7 +62,7 @@ const FoodCard = props => {
             <Grid item xs container direction="column" spacing={2}>
               <Grid item xs>
                 <Typography gutterBottom variant="h5">
-                  {food.name}
+                  {props.food.name}
                 </Typography>
                 <Typography variant="body2" gutterBottom>
                   Full resolution 1920x1080 • JPEG
@@ -72,25 +72,18 @@ const FoodCard = props => {
                 </Typography>
               </Grid>
               <Grid item>
-                <Button variant="contained" color="primary" className={classes.button}>
-                  Edit
-                  {/* This Button uses a Font Icon, see the installation instructions in the docs. */}
-                  <EditIcon className={classes.rightIcon}>send</EditIcon>
-                </Button>
-                <DeleteButton food={food} />
-                {/* <Typography variant="body2" style={{ cursor: 'pointer' }}>
-                  Remove
-                </Typography> */}
+                <FoodDialog action="edit" food={props.food} />
+                <DeleteButton food={props.food} />
               </Grid>
             </Grid>
             <Grid item>
-              <Typography variant="h5">P{food.price}</Typography>
+              <Typography variant="h5">P{props.food.price}</Typography>
             </Grid>
           </Grid>
         </Grid>
       </Paper>
     </div>
-  );
-};
+  )
+}
 
-export default FoodCard;
+export default FoodCard

@@ -1,75 +1,76 @@
-const { AuthenticationError } = require('apollo-server-express');
+const { AuthenticationError } = require('apollo-server-express')
 
-const checkAuth = require('../../util/checkAuth');
-const Food = require('../../models/Food');
+const checkAuth = require('../../util/checkAuth')
+const Food = require('../../models/Food')
 
 module.exports = {
   Query: {
     getFoods: async () => {
       try {
-        const foods = await Food.find().sort({ createdAt: -1 });
+        const foods = await Food.find().sort({ createdAt: -1 })
 
-        return foods;
+        return foods
       } catch (error) {
-        throw new Error(error);
+        throw new Error(error)
       }
     }
   },
 
   Mutation: {
     createFood: async (_, { name, price }, context) => {
-      const { role } = checkAuth(context);
+      const { role } = checkAuth(context)
 
-      if (role !== 'Admin') throw new AuthenticationError('Action not allowed');
-      if (name.trim() === '') throw new Error('Name must not be empty');
-      if (price.trim() === '') throw new Error('Price must not be empty');
+      if (role !== 'Admin') throw new AuthenticationError('Action not allowed')
+      if (name.trim() === '') throw new Error('Name must not be empty')
+      if (price.trim() === '') throw new Error('Price must not be empty')
 
       const newFood = new Food({
         name,
         price
-      });
+      })
 
-      const food = await newFood.save();
+      const food = await newFood.save()
 
-      return food;
+      return food
     },
 
     editFood: async (_, { foodId, name, price }, context) => {
-      const { role } = checkAuth(context);
+      const { role } = checkAuth(context)
 
-      if (role !== 'Admin') throw new AuthenticationError('Action not allowed');
-      if (name.trim() === '') throw new Error('Name must not be empty');
-      if (price.trim() === '') throw new Error('Price must not be empty');
+      if (role !== 'Admin') throw new AuthenticationError('Action not allowed')
+      if (name.trim() === '') throw new Error('Name must not be empty')
+      if (price.trim() === '') throw new Error('Price must not be empty')
 
-      const food = await Food.findById(foodId);
+      const food = await Food.findById(foodId)
 
-      if (!food) throw new Error('Food not found');
+      if (!food) throw new Error('Food not found')
+      if (food.name === name && food.price === price) throw new Error('Nothing to save')
 
-      food.name = name;
-      food.price = price;
+      food.name = name
+      food.price = price
 
-      const res = await food.save();
+      await food.save()
 
-      return res;
+      return food
     },
 
     deleteFood: async (_, { name }, context) => {
-      const { role } = checkAuth(context);
+      const { role } = checkAuth(context)
 
-      if (role !== 'Admin') throw new AuthenticationError('Action not allowed');
-      if (name.trim() === '') throw new Error('Name must not be empty');
+      if (role !== 'Admin') throw new AuthenticationError('Action not allowed')
+      if (name.trim() === '') throw new Error('Name must not be empty')
 
       try {
-        const food = await Food.findOne({ name });
+        const food = await Food.findOne({ name })
 
-        if (!food) throw new Error('Food not found');
+        if (!food) throw new Error('Food not found')
 
-        await food.delete();
+        await food.delete()
 
-        return `${name} has successfully deleted`;
+        return `${name} has successfully deleted`
       } catch (error) {
-        throw new Error(error);
+        throw new Error(error)
       }
     }
   }
-};
+}

@@ -1,12 +1,12 @@
-import React from 'react';
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import React from 'react'
+import { useQuery } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
 
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles'
+import Grid from '@material-ui/core/Grid'
 
-import FoodCard from '../components/FoodCard';
-import NewFood from '../components/NewFood';
+import FoodCard from '../components/FoodCard'
+import FoodDialog from '../components/FoodDialog'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,20 +17,19 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center',
     color: theme.palette.text.secondary
   }
-}));
+}))
 
 function Foods() {
-  const { loading, data, error } = useQuery(FETCH_FOODS);
+  const { loading, data, error } = useQuery(FETCH_FOODS)
 
-  const classes = useStyles();
+  const classes = useStyles()
   return (
     <>
-      {/* <h1>Food Page</h1> */}
       {loading ? (
         <h1>loading ... </h1>
       ) : (
         <div className={classes.root}>
-          <NewFood />
+          <FoodDialog action="add" />
           <Grid container spacing={5}>
             {data.getFoods.map(food => (
               <Grid key={food.id} item xs={12} sm={12}>
@@ -41,7 +40,7 @@ function Foods() {
         </div>
       )}
     </>
-  );
+  )
 }
 
 const FETCH_FOODS = gql`
@@ -52,6 +51,6 @@ const FETCH_FOODS = gql`
       price
     }
   }
-`;
+`
 
-export default Foods;
+export default Foods

@@ -6,23 +6,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
 import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
+import OrderExpansionPanel from './OrderExpansionPanel'
 
-const columns = [
-  { id: 'name', label: 'Name', minWidth: 200 },
-  { id: 'email', label: 'Email', minWidth: 100 },
-  {
-    id: 'role',
-    label: 'Role',
-    minWidth: 120
-  }
-]
-
-function createData(name, email, role) {
-  return { name, email, role }
+function createData(order) {
+  return { order }
 }
 
 const useStyles = makeStyles({
@@ -30,19 +19,19 @@ const useStyles = makeStyles({
     width: '100%'
   },
   tableWrapper: {
-    maxHeight: 407,
+    maxHeight: 507,
     overflow: 'auto'
   }
 })
 
-const UserTable = () => {
+const OrderTable = () => {
   const classes = useStyles()
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
 
-  const { loading, data } = useQuery(GET_USERS)
+  const { loading, data } = useQuery(GET_ORDERS)
 
-  function handleChangePage(event, newPage) {
+  function handleChangePage(newPage) {
     setPage(newPage)
   }
 
@@ -54,8 +43,8 @@ const UserTable = () => {
   let rows = []
 
   if (!loading) {
-    data.getUsers.forEach(user => {
-      rows.push(createData(user.name, user.email, user.role))
+    data.getOrders.forEach(order => {
+      rows.push(createData(order))
     })
   }
 
@@ -63,31 +52,11 @@ const UserTable = () => {
     <Paper className={classes.root}>
       <div className={classes.tableWrapper}>
         <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              {columns.map(column => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.email}>
-                  {columns.map(column => {
-                    const value = row[column.id]
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                      </TableCell>
-                    )
-                  })}
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.order}>
+                  <OrderExpansionPanel order={row.order} />
                 </TableRow>
               )
             })}
@@ -113,15 +82,25 @@ const UserTable = () => {
   )
 }
 
-const GET_USERS = gql`
-  query getUsers {
-    getUsers {
+const GET_ORDERS = gql`
+  query getOrders {
+    getOrders {
       id
       name
       email
-      role
+      foods {
+        name
+        quantity
+        price
+        cost
+      }
+      totalCost
+      deliveryDate
+      status
+      paid
+      createdAt
     }
   }
 `
 
-export default UserTable
+export default OrderTable
