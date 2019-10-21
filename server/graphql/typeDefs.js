@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-express');
+const { gql } = require('apollo-server-express')
 
 module.exports = gql`
   type User {
@@ -66,7 +66,7 @@ module.exports = gql`
 
   input DeliveryDateInput {
     date: String!
-    orderIds: [ID]!
+    orderIds: String!
   }
 
   # input DeliveryDateOrdersInput {
@@ -110,4 +110,4 @@ module.exports = gql`
     editDeliveryDate(deliveryDateId: ID!, date: String!): DeliveryDate!
     deleteDeliveryDate(deliveryId: ID!): String!
   }
-`;
+`

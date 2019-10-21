@@ -23,12 +23,14 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import FastfoodIcon from '@material-ui/icons/Fastfood'
 import ListAltIcon from '@material-ui/icons/ListAlt'
+import LocalShippingIcon from '@material-ui/icons/LocalShipping'
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt'
 
 import { Link } from 'react-router-dom'
 
 import Foods from '../pages/Foods'
 import OrderTable from '../components/OrderTable'
+import DeliveriesTable from '../components/DeliveriesTable'
 import UserTable from '../components/UserTable'
 import { AuthContext } from '../context/auth'
 
@@ -109,11 +111,9 @@ function ResponsiveDrawer(props) {
   const mainContent = (
     <>
       {navTitle === 'Dashboard' ? <h1>dashboard</h1> : ''}
-
       {navTitle === 'Foods' ? <Foods /> : ''}
-
       {navTitle === 'Orders' ? <OrderTable /> : ''}
-
+      {navTitle === 'Deliveries' ? <DeliveriesTable /> : ''}
       {navTitle === 'Users' ? <UserTable /> : ''}
     </>
   )
@@ -161,6 +161,19 @@ function ResponsiveDrawer(props) {
             <ListAltIcon />
           </ListItemIcon>
           <ListItemText primary={'Orders'} />
+        </ListItem>
+        <ListItem
+          button
+          key="Deliveries"
+          component={Link}
+          to={`/deliveries`}
+          selected={handleSelectedNav('deliveries')}
+          onClick={() => setNavTitle('Deliveries')}
+        >
+          <ListItemIcon>
+            <LocalShippingIcon />
+          </ListItemIcon>
+          <ListItemText primary={'Deliveries'} />
         </ListItem>
         <ListItem
           button

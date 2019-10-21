@@ -29,7 +29,7 @@ const OrderTable = () => {
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
 
-  const { loading, data } = useQuery(GET_ORDERS)
+  const { loading, data } = useQuery(GET_ORDERS_QUERY)
 
   function handleChangePage(newPage) {
     setPage(newPage)
@@ -55,7 +55,7 @@ const OrderTable = () => {
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.order}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.order.id}>
                   <OrderExpansionPanel order={row.order} />
                 </TableRow>
               )
@@ -82,7 +82,7 @@ const OrderTable = () => {
   )
 }
 
-const GET_ORDERS = gql`
+const GET_ORDERS_QUERY = gql`
   query getOrders {
     getOrders {
       id

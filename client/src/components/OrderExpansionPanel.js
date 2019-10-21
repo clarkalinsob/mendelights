@@ -54,7 +54,7 @@ const OrderExpansionPanel = ({ order }) => {
 
   return (
     <div className={classes.root}>
-      <ExpansionPanel key={order.id} square="false">
+      <ExpansionPanel key={order.id} square={true}>
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1c-content"
