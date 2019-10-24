@@ -58,14 +58,15 @@ const DeliveryDateDialog = props => {
 
         data.getDeliveryDates = [result.data.createDeliveryDate, ...data.getDeliveryDates]
         proxy.writeQuery({ query: GET_DELIVERYDATES_QUERY, data })
-      } else {
-        const data = proxy.readQuery({
-          query: GET_ORDERS_QUERY
-        })
-
-        data.getOrders = result.data.editDeliveryDate.formers
-        proxy.writeQuery({ query: GET_ORDERS_QUERY, data })
       }
+      // else {
+      //   const data = proxy.readQuery({
+      //     query: GET_ORDERS_QUERY
+      //   })
+
+      //   data.getOrders = result.data.editDeliveryDate.formers
+      //   proxy.writeQuery({ query: GET_ORDERS_QUERY, data })
+      // }
 
       handleClose()
     }
@@ -229,8 +230,19 @@ const EDIT_DELIVERYDATE_MUTATION = gql`
       }
       formers {
         id
+        name
+        email
+        foods {
+          name
+          quantity
+          price
+          cost
+        }
         totalCost
         deliveryDate
+        status
+        paid
+        createdAt
       }
     }
   }
