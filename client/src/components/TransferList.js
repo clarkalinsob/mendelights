@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import gql from 'graphql-tag'
+import { useQuery } from '@apollo/react-hooks'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import List from '@material-ui/core/List'
@@ -52,7 +54,8 @@ function union(a, b) {
 const TransferList = props => {
   const classes = useStyles()
 
-  const filteredOrders = props.orders.filter(ord => !ord.deliveryDate)
+  const { data } = useQuery(GET_ORDERS_QUERY)
+  const filteredOrders = data.getOrders.filter(ord => !ord.deliveryDate)
 
   const [checked, setChecked] = useState([])
   const [left, setLeft] = useState(filteredOrders)
@@ -97,10 +100,11 @@ const TransferList = props => {
   }
 
   const sendData = () => {
-    props.parentCallback(right)
+    props.getLeftListCallback(left)
+    props.getRightListCallback(right)
   }
 
-  if (right.length > 0) sendData()
+  sendData()
 
   const customList = (title, items) => (
     <Card>
@@ -239,5 +243,26 @@ const TransferList = props => {
     </Grid>
   )
 }
+
+const GET_ORDERS_QUERY = gql`
+  query getOrders {
+    getOrders {
+      id
+      name
+      email
+      foods {
+        name
+        quantity
+        price
+        cost
+      }
+      totalCost
+      deliveryDate
+      #   status
+      paid
+      createdAt
+    }
+  }
+`
 
 export default TransferList

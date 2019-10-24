@@ -34,9 +34,8 @@ module.exports = {
       if (deliveryDate) throw new Error('Delivery date already exist')
 
       let newOrderIds = []
-      parsedOrderIds.forEach(order => {
-        newOrderIds.push(order.id)
-      })
+      parsedOrderIds.forEach(order => newOrderIds.push(order.id))
+
       const newDeliveryDate = new DeliveryDate({
         date,
         orders: newOrderIds
@@ -58,7 +57,11 @@ module.exports = {
       }
     },
 
-    editDeliveryDate: async (_, { deliveryDateId, date }, context) => {
+    editDeliveryDate: async (
+      _,
+      { deliveryDateId, deliveryDateInput: { date, orderIds, formerIds } },
+      context
+    ) => {
       const { role } = checkAuth(context)
 
       if (role !== 'Admin') throw new AuthenticationError('Action not allowed')
@@ -68,22 +71,40 @@ module.exports = {
 
       if (!deliveryDate) throw new Error('Delivery date not found')
 
-      deliveryDate.date = date
+      const parsedOrderIds = JSON.parse(orderIds)
+      const parsedFormerIds = JSON.parse(formerIds)
 
-      // TODO: pull selected order within delivery date
+      let newOrderIds = []
+      let newFormerIds = []
+
+      parsedOrderIds.forEach(order => newOrderIds.push(order.id))
+      parsedFormerIds.forEach(order => newFormerIds.push(order.id))
+
+      deliveryDate.date = date
+      deliveryDate.orders = newOrderIds
+
+      await Order.updateMany({ _id: { $in: newOrderIds } }, { $set: { deliveryDate: date } })
+      await Order.updateMany({ _id: { $in: newFormerIds } }, { $set: { deliveryDate: null } })
 
       const res = await deliveryDate.save()
+      const orders = await Order.find({ _id: { $in: newOrderIds } })
+      const formers = await Order.find({ _id: { $in: newFormerIds } })
 
-      return res
+      return {
+        id: res._id,
+        date: res.date,
+        orders,
+        formers
+      }
     },
 
-    deleteDeliveryDate: async (_, { deliveryId }, context) => {
+    deleteDeliveryDate: async (_, { deliveryDateId }, context) => {
       const { role } = checkAuth(context)
 
       if (role !== 'Admin') throw new AuthenticationError('Action not allowed')
 
       try {
-        const deliveryDate = await DeliveryDate.findById(deliveryId)
+        const deliveryDate = await DeliveryDate.findById(deliveryDateId)
 
         if (!deliveryDate) throw new Error('Delivery date not found')
 

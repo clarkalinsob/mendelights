@@ -43,6 +43,7 @@ module.exports = gql`
     id: ID!
     date: String!
     orders: [Order]!
+    formers: [Order]
   }
 
   input SignupInput {
@@ -67,6 +68,7 @@ module.exports = gql`
   input DeliveryDateInput {
     date: String!
     orderIds: String!
+    formerIds: String
   }
 
   # input DeliveryDateOrdersInput {
@@ -107,7 +109,7 @@ module.exports = gql`
 
     # deliveryDate mutations
     createDeliveryDate(deliveryDateInput: DeliveryDateInput): DeliveryDate!
-    editDeliveryDate(deliveryDateId: ID!, date: String!): DeliveryDate!
-    deleteDeliveryDate(deliveryId: ID!): String!
+    editDeliveryDate(deliveryDateId: ID!, deliveryDateInput: DeliveryDateInput): DeliveryDate!
+    deleteDeliveryDate(deliveryDateId: ID!): String!
   }
 `

@@ -34,23 +34,38 @@ const DeliveryDateDialog = props => {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState(props.deliveryDateObj ? props.deliveryDateObj.date : '')
-  const [orderIds, setOrderIds] = useState('')
-
-  const { loading, data } = useQuery(GET_DELIVERYDATES_QUERY)
+  const [orderIds, setOrderIds] = useState(
+    props.deliveryDateObj ? props.deliveryDateObj.orders : []
+  )
+  const [formerIds, setFormerIds] = useState([])
   const getOrders = useQuery(GET_ORDERS_QUERY)
 
-  const [createDeliveryDate, { error }] = useMutation(CREATE_DELIVERYDATE_MUTATION, {
+  const mutation =
+    props.action === 'add' ? CREATE_DELIVERYDATE_MUTATION : EDIT_DELIVERYDATE_MUTATION
+
+  const [mutationCallback, { error }] = useMutation(mutation, {
     variables: {
+      deliveryDateId: props.deliveryDateObj ? props.deliveryDateObj.id : null,
       date: date.toString(),
-      orderIds: JSON.stringify(orderIds)
+      orderIds: JSON.stringify(orderIds),
+      formerIds: JSON.stringify(formerIds)
     },
     update(proxy, result) {
-      const data = proxy.readQuery({
-        query: GET_DELIVERYDATES_QUERY
-      })
+      if (result.data.createDeliveryDate) {
+        const data = proxy.readQuery({
+          query: GET_DELIVERYDATES_QUERY
+        })
 
-      data.getDeliveryDates = [result.data.createDeliveryDate, ...data.getDeliveryDates]
-      proxy.writeQuery({ query: GET_DELIVERYDATES_QUERY, data })
+        data.getDeliveryDates = [result.data.createDeliveryDate, ...data.getDeliveryDates]
+        proxy.writeQuery({ query: GET_DELIVERYDATES_QUERY, data })
+      } else {
+        const data = proxy.readQuery({
+          query: GET_ORDERS_QUERY
+        })
+
+        data.getOrders = result.data.editDeliveryDate.formers
+        proxy.writeQuery({ query: GET_ORDERS_QUERY, data })
+      }
 
       handleClose()
     }
@@ -68,13 +83,16 @@ const DeliveryDateDialog = props => {
     setDate(date)
   }
 
-  const getOrdersCallback = data => {
-    if (data.length > 0) setOrderIds(data)
-    else console.log('Unable to save empty data')
+  const getLeftListCallback = data => {
+    setFormerIds(data)
+  }
+
+  const getRightListCallback = data => {
+    setOrderIds(data)
   }
 
   return (
-    <div style={{ textAlign: 'right', marginBottom: 20 }}>
+    <div style={{ textAlign: props.action === 'add' ? 'right' : '', marginBottom: 20 }}>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
         {props.action === 'add' ? 'Add New' : 'Edit'}
         {props.action === 'add' ? (
@@ -101,7 +119,8 @@ const DeliveryDateDialog = props => {
             <TransferList
               orders={getOrders.data.getOrders}
               savedData={props.deliveryDateObj}
-              parentCallback={getOrdersCallback}
+              getLeftListCallback={getLeftListCallback}
+              getRightListCallback={getRightListCallback}
             />
           ) : (
             'loading'
@@ -121,7 +140,7 @@ const DeliveryDateDialog = props => {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={createDeliveryDate} color="primary">
+          <Button onClick={mutationCallback} color="primary">
             Save
           </Button>
         </DialogActions>
@@ -171,6 +190,44 @@ const CREATE_DELIVERYDATE_MUTATION = gql`
       id
       date
       orders {
+        id
+        totalCost
+        deliveryDate
+      }
+    }
+  }
+`
+
+const EDIT_DELIVERYDATE_MUTATION = gql`
+  mutation editDeliveryDate(
+    $deliveryDateId: ID!
+    $date: String!
+    $orderIds: String!
+    $formerIds: String!
+  ) {
+    editDeliveryDate(
+      deliveryDateId: $deliveryDateId
+      deliveryDateInput: { date: $date, orderIds: $orderIds, formerIds: $formerIds }
+    ) {
+      id
+      date
+      orders {
+        id
+        name
+        email
+        foods {
+          name
+          quantity
+          price
+          cost
+        }
+        totalCost
+        deliveryDate
+        #   status
+        paid
+        createdAt
+      }
+      formers {
         id
         totalCost
         deliveryDate

@@ -79,8 +79,6 @@ const FoodDialog = props => {
     setOpen(false)
   }
 
-  console.log('error:::', error)
-
   return (
     <div style={props.action === 'edit' ? { float: 'left' } : { float: 'right' }}>
       <Button
