@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function Foods() {
-  const { loading, data, error } = useQuery(FETCH_FOODS)
+  const { loading, data, error } = useQuery(FETCH_FOODS_QUERY)
 
   const classes = useStyles()
   return (
@@ -43,7 +43,7 @@ function Foods() {
   )
 }
 
-const FETCH_FOODS = gql`
+const FETCH_FOODS_QUERY = gql`
   query getFoods {
     getFoods {
       id
