@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     width: '100%'
   },
   tableWrapper: {
-    maxHeight: 507,
+    maxHeight: 800,
     overflow: 'auto'
   }
 })
@@ -55,7 +55,7 @@ const OrderTable = () => {
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.order.id}>
+                <TableRow hover role='checkbox' tabIndex={-1} key={row.order.id}>
                   <OrderExpansionPanel order={row.order} />
                 </TableRow>
               )
@@ -65,7 +65,7 @@ const OrderTable = () => {
       </div>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
-        component="div"
+        component='div'
         count={rows.length}
         rowsPerPage={rowsPerPage}
         page={page}
